@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Destiny 2 Gear Vault sign-in</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<style>
+  body { background:#080d14; color:#e8f1f8; font-family:Segoe UI,sans-serif; display:flex;
+         align-items:center; justify-content:center; height:100vh; margin:0; text-align:center; }
+  h1 { color:#4fd8ff; font-weight:600; }
+  p { color:#8aa0b2; }
+</style>
+</head>
+<body>
+<div>
+  <h1 id="title">Signing you in…</h1>
+  <p id="note">Returning to the Gear Vault app on this computer.</p>
+</div>
+<script>
+  // Hand the code and state to the app, which listens only on this computer. Change the port here
+  // if you change "local_port" in edition.json.
+  var PORT = 8080;
+  var query = window.location.search;
+  var title = document.getElementById("title");
+  var note = document.getElementById("note");
+  if (query.indexOf("code=") === -1 && query.indexOf("error=") === -1) {
+    title.textContent = "Nothing to sign in";
+    note.textContent = "Open the Gear Vault app and press Resync to start.";
+  } else {
+    // Check the app is still waiting before handing over the one-time code.
+    fetch("http://127.0.0.1:" + PORT + "/ping", { mode: "no-cors" }).then(function () {
+      window.location.replace("http://127.0.0.1:" + PORT + "/callback" + query);
+    }).catch(function () {
+      title.textContent = "The app is not waiting for sign-in";
+      note.textContent = "Gear Vault must be open and waiting. It may have timed out. " +
+        "Go back to the app, press Resync inventory, and sign in again. This code can only be used once.";
+    });
+  }
+</script>
+</body>
+</html>
