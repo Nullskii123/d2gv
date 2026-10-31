@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Destiny 2 Gear Vault sign-in</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<style>
+  body { background:#080d14; color:#e8f1f8; font-family:Segoe UI,sans-serif; display:flex;
+         align-items:center; justify-content:center; height:100vh; margin:0; text-align:center; }
+  h1 { color:#4fd8ff; font-weight:600; }
+  p { color:#8aa0b2; }
+</style>
+</head>
+<body>
+<div>
+  <h1 id="title">Signing you in…</h1>
+  <p id="note">Returning to the Gear Vault app on this computer.</p>
+</div>
+<script>
+  // Hand the code and state to the app, which listens only on this computer. Change the port here
+  // if you change "local_port" in edition.json.
+  var PORT = 8080;
+  var query = window.location.search;
+  var title = document.getElementById("title");
+  var note = document.getElementById("note");
+  if (query.indexOf("code=") === -1 && query.indexOf("error=") === -1) {
+    title.textContent = "Nothing to sign in";
+    note.textContent = "Open the Gear Vault app and press Resync to start.";
+  } else {
+    // Navigating (not fetching) to 127.0.0.1 is allowed by every browser, including Brave.
+    note.textContent = "Returning to the Gear Vault app on this computer. If the next page says " +
+      "'refused to connect', the app timed out: press Resync inventory in the app and sign in again.";
+    window.location.replace("http://127.0.0.1:" + PORT + "/callback" + query);
+  }
+</script>
+</body>
+</html>
